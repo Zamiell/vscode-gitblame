@@ -23,12 +23,12 @@
 		"test": "tsx --test --experimental-test-module-mocks \"./**/*.test.ts\""
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.5.1",
+		"@biomejs/biome": "2.5.8",
 		"@types/node": "22.9.0",
 		"@types/vscode": "1.100.0",
-		"esbuild": "0.28.1",
-		"tsx": "4.22.4",
-		"typescript": "6.0.3"
+		"esbuild": "0.28.2",
+		"tsx": "4.23.12",
+		"typescript": "7.0.2"
 	},
 	"homepage": "https://github.com/Sertion/vscode-gitblame/blob/main/README.md",
 	"bugs": {
@@ -279,5 +279,8 @@
 				}
 			}
 		}
+	},
+	"allowScripts": {
+		"esbuild@0.28.2": true
 	}
 }
