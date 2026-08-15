@@ -1,12 +1,4 @@
-import {
-	Disposable,
-	type TextDocument,
-	type TextDocumentChangeEvent,
-	type TextEditor,
-	type TextEditorSelectionChangeEvent,
-	window,
-	workspace,
-} from "vscode";
+import { Disposable, window, workspace } from "vscode";
 import { Blamer } from "./blame.js";
 import { getActiveTextEditor } from "./get-active.js";
 import type { LineAttachedCommit } from "./git/LineAttachedCommit.js";
@@ -23,9 +15,7 @@ export class Extension {
 	public readonly blame = new Blamer();
 	public readonly view = new View();
 
-	private waitingForLine:
-		| undefined
-		| ((reason?: LineAttachedCommit | undefined) => void) = undefined;
+	private waitingForLine?: (reason?: LineAttachedCommit | undefined) => void;
 	private readonly disposable = this.setupListeners();
 
 	public async updateView(
@@ -99,24 +89,23 @@ export class Extension {
 	}
 
 	private setupListeners(): Disposable {
-		const changeTextEditorSelection = (
-			ev: TextEditor | TextEditorSelectionChangeEvent | undefined,
-		): void => {
-			this.updateView(ev && "textEditor" in ev ? ev.textEditor : ev);
-		};
-		const documentChange = (ev: TextDocumentChangeEvent | TextDocument) => {
-			const document = "document" in ev ? ev.document : ev;
-			const textEditor = getActiveTextEditor();
-			if (textEditor?.document === document) {
-				this.updateView(textEditor, false);
-			}
-		};
-
 		return Disposable.from(
-			window.onDidChangeActiveTextEditor(changeTextEditorSelection),
-			window.onDidChangeTextEditorSelection(changeTextEditorSelection),
-			workspace.onDidSaveTextDocument(documentChange),
-			workspace.onDidChangeTextDocument(documentChange),
+			window.onDidChangeActiveTextEditor((ev) => void this.updateView(ev)),
+			window.onDidChangeTextEditorSelection(
+				(ev) => void this.updateView(ev?.textEditor),
+			),
+			workspace.onDidSaveTextDocument((document) => {
+				const textEditor = getActiveTextEditor();
+				if (textEditor?.document === document) {
+					this.updateView(textEditor, false);
+				}
+			}),
+			workspace.onDidChangeTextDocument((ev) => {
+				const textEditor = getActiveTextEditor();
+				if (textEditor?.document === ev.document) {
+					this.updateView(textEditor, false);
+				}
+			}),
 			workspace.onDidCloseTextDocument((document: Document): void =>
 				this.blame.remove(document.fileName),
 			),
