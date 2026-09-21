@@ -40,6 +40,12 @@ The command `gitblame.gitShow` shows the current comit in a terminal using `git 
 
 Url where you can see the commit by hash
 
+Azure DevOps SSH remotes (`git@ssh.dev.azure.com:v3/organization/project/repository`
+or `ssh://git@ssh.dev.azure.com/v3/organization/project/repository`) are automatically
+converted to `https://dev.azure.com/organization/project/_git/repository/commit/<hash>`
+by the default template. The `${gitorigin.hostname}` and `${gitorigin.path}` tokens
+use the converted web hostname and path.
+
 If set to an empty value it will try to guess the URL based on your remote origin. Can only support servers that don't require auth.
 
 Available tokens:

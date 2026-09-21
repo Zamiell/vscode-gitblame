@@ -95,6 +95,7 @@ export async function generateUrlTokens(
 	}
 
 	const tool = originUrlToToolUrl(generalGit.remoteUrl);
+	const fileTool = originUrlToToolUrl(generalGit.fileOrigin);
 
 	return {
 		hash: lineAware.commit.hash,
@@ -106,7 +107,9 @@ export async function generateUrlTokens(
 		"project.defaultbranch": generalGit.defaultBranch,
 		"project.currenthash": generalGit.currentHash,
 		"gitorigin.hostname": tool ? gitOriginHostname(tool) : "no-origin-url",
-		"gitorigin.path": gitRemotePath(stripGitSuffix(generalGit.fileOrigin)),
+		"gitorigin.path": gitRemotePath(
+			fileTool?.href ?? stripGitSuffix(generalGit.fileOrigin),
+		),
 		"gitorigin.port": tool?.port ? `:${tool.port}` : "",
 		"file.path": generalGit.relativePathOfActiveFile,
 		"file.path.result": generalGit.relativePathOfActiveFile,
